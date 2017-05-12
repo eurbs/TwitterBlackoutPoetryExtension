@@ -1,0 +1,17 @@
+{
+  "manifest_version": 2,
+  "name": "Twitter Blackout Poems",
+  "description": "Item 206 for Breck Scav 2017. Creates blackout poems from tweets",
+  "version": "0.1",
+  "web_accessible_resources": [
+    "fixtures/google-10000-english-usa.txt"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://twitter.com/*"
+      ],
+      "js": ["content.js"]
+    }
+  ]
+}
