@@ -64,15 +64,36 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
+function createBlackoutWord(word) {
+  var subword = getFirstMatchingSubstring(word);
+  var resWordArray = [];
+  if (word !== subword) {
+    var subwordIdx = 0;
+    for (var j = 0; j < word.length; j++) {
+      if (subwordIdx < subword.length && word[j] === subword[subwordIdx]) {
+        // if the word's character matches the subword character append and move on
+        resWordArray.push(word[j]);
+        subwordIdx++;
+      } else {
+        // if the word's character does not match the next subword character,
+        // replace the character with a square
+        resWordArray.push(BOX_CHAR);
+      }
+    }
+    return resWordArray.join('');
+  } else {
+    return word;
+  }
+}
+
 function generateReplacementText(text) {
-  console.log('entering generate replacement')
   // todo: handle punctuation (str.replace can have a callback)
   //       regex for punctuation: /[~`!@#$%^&*(){}\[\];:"'<,.>?\/\\|_+=-]/g
   // var textNoPunctuation = text.replace(/[~`!@#$%^&*(){}\[\];:"'<,.>?\/\\|_+=-]/g, '');
   // var words = textNoPunctuation.split(" ");
   var words = text.split(" ");
   var maxWords = getRandomInt(1, Math.min(words.length, 5));
-  console.log('logging maxWords', maxWords)
+  var wordsToReplaceIdx
   var i;
   var resWords = [];
   // greedily find the first matching word in the substring, if none,
@@ -82,26 +103,7 @@ function generateReplacementText(text) {
   //       can also choose the largest words in the list.
   for (i = 0; i < maxWords; i++) {
     var word = words[i];
-    var subword = getFirstMatchingSubstring(word);
-    console.log('logging subword', subword);
-    var resWordArray = [];
-    if (word !== subword) {
-      var subwordIdx = 0;
-      for (var j = 0; j < word.length; j++) {
-        if (subwordIdx < subword.length && word[j] === subword[subwordIdx]) {
-          // if the word's character matches the subword character append and move on
-          resWordArray.push(word[j]);
-          subwordIdx++;
-        } else {
-          // if the word's character does not match the next subword character,
-          // replace the character with a square
-          resWordArray.push(BOX_CHAR);
-        }
-      }
-      resWords.push(resWordArray.join(''));
-    } else {
-      resWords.push(word);
-    }
+    resWords.push(createBlackoutWord(word));
   }
 
   // replace the remaining words with all boxes
@@ -199,6 +201,3 @@ function walkAndObserve(doc) {
   bodyObserver = new MutationObserver(observerCallback);
   bodyObserver.observe(doc.body, observerConfig);
 }
-
-//replaceText(document);
-// walkAndObserve(document);
