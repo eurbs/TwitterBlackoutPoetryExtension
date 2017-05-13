@@ -12,7 +12,7 @@ xhr.onreadystatechange = function()
   {
     //... The content has been read in xhr.responseText
     console.log('ready to go');
-    console.log('logging response text', xhr.responseText)
+    // console.log('logging response text', xhr.responseText)
     wordDictionaryArray = xhr.responseText.split('\n');
     walkAndObserve(document);
   }
@@ -86,6 +86,21 @@ function createBlackoutWord(word) {
   }
 }
 
+function getWordIndices(numWords, totalWords) {
+  // Indicies will be modified
+  var indices = Array.from(Array(totalWords).keys());
+  console.log(indices)
+  var resultIndices = []
+  for (var i = 0; i < numWords; i++) {
+    // Get a random index from the remaining indicies
+    var randInt = getRandomInt(0, indices.length - 1);
+    resultIndices.push(indices.splice(randInt, 1)[0]);
+  }
+  // Unsorted array of indices
+  console.log(resultIndices)
+  return resultIndices;
+}
+
 function generateReplacementText(text) {
   // todo: handle punctuation (str.replace can have a callback)
   //       regex for punctuation: /[~`!@#$%^&*(){}\[\];:"'<,.>?\/\\|_+=-]/g
@@ -93,25 +108,22 @@ function generateReplacementText(text) {
   // var words = textNoPunctuation.split(" ");
   var words = text.split(" ");
   var maxWords = getRandomInt(1, Math.min(words.length, 5));
-  var wordsToReplaceIdx
-  var i;
+  // Select random words to modify
+  var selectedWordIndices = getWordIndices(maxWords, words.length);
   var resWords = [];
   // greedily find the first matching word in the substring, if none,
   // use the word itself.
   // todo: refactor
-  // todo: no more greedy, need to randomly choose indicies
+  // todo: no more greedy, need to randomly choose indices
   //       can also choose the largest words in the list.
-  for (i = 0; i < maxWords; i++) {
+  for (var i = 0; i < words.length; i++) {
     var word = words[i];
-    resWords.push(createBlackoutWord(word));
-  }
-
-  // replace the remaining words with all boxes
-  for (i; i < words.length; i++) {
-    var word = words[i];
-
-    // http://stackoverflow.com/questions/1877475/repeat-character-n-times
-    resWords.push(Array(word.length).join(BOX_CHAR));
+    if (selectedWordIndices.includes(i)) {
+      resWords.push(createBlackoutWord(word));
+    } else {
+      // http://stackoverflow.com/questions/1877475/repeat-character-n-times
+      resWords.push(Array(word.length).join(BOX_CHAR));
+    }
   }
 
   return resWords.join(" ");
