@@ -20,42 +20,6 @@ xhr.onreadystatechange = function()
 xhr.send();
 
 
-// http://stackoverflow.com/questions/1431094/how-do-i-replace-a-character-at-a-particular-index-in-javascript
-// note: it's not usually a good idea to extend base JavaScript classes but YOLO
-String.prototype.replaceAt=function(index, replacement) {
-  return this.substr(0, index) + replacement+ this.substr(index + replacement.length);
-}
-
-// http://stackoverflow.com/questions/40818769/get-all-substrings-of-a-string-in-javascript
-// function getAllSubstrings(str) {
-//   var i, j, result = [];
-
-//   for (i = 0; i < str.length; i++) {
-//       for (j = i + 1; j < str.length + 1; j++) {
-//           result.push(str.slice(i, j));
-//       }
-//   }
-//   return result;
-// }
-
-// modified from getAllSubstrings from stack overflow
-function getFirstMatchingSubstring(word) {
-  var i, j;
-
-  // note: must optimize to have a minimum word length
-  // note: can also optimize by sorting the list of matching words by length
-  for (i = 0; i < word.length; i++) {
-    for (j = i + 1; j < word.length + 1; j++) {
-      var subword = word.slice(i, j);
-      if (subword.length > 2 && wordDictionaryArray.includes(subword)) {
-        return subword;
-      }
-    }
-  }
-
-  return word;
-}
-
 // http://stackoverflow.com/questions/12048621/get-all-combinations-for-a-string
 // Using combinations (don't want permutations, must maintain order of letters)
 // Note: this algorithm may not be perfect, but it does the trick for now
@@ -70,7 +34,7 @@ function getFirstMatchingCombination(word) {
       if (depth > 0 && depth < 8) {
         return loop(i + 1, depth - 1, next);
       } 
-      if(next.length > 2 && wordDictionaryArray.includes(next)) {
+      if(next.length > 3 && wordDictionaryArray.includes(next)) {
         return next;
       }
     }
@@ -141,9 +105,8 @@ function generateReplacementText(text) {
   // Select random words to modify
   var selectedWordIndices = getWordIndices(maxWords, words.length);
   var resWords = [];
-  // greedily find the first matching word in the substring, if none,
+  // greedily find the first matching word in the combination, if none,
   // use the word itself.
-  // todo: refactor
   // todo: no more greedy, need to randomly choose indices
   //       can also choose the largest words in the list.
   for (var i = 0; i < words.length; i++) {
@@ -194,23 +157,6 @@ function replaceText(element) {
     }
   }
 }
-
-// document.addEventListener("load", function(event) {
-//   for (var i = 0; i < tweets.length; i++) {
-//     var tweet = tweets[i];
-
-//     for (var j = 0; j < tweet.childNodes.length; j++) {
-//       var node = tweet.childNodes[j];
-
-//       // Sanity check for text type child node. It should be a text node.
-//       if (node.nodeType === 3) {
-//         var text = node.nodeValue;
-//         // var replacedText = text.replace(/handled/gi, 'yay YEEAAAH');
-//         tweet.replaceChild(document.createTextNode('yes yes'), node);
-//       }
-//     }
-//   }
-// });
 
 function observerCallback(mutations) {
   var i, node;
