@@ -56,6 +56,38 @@ function getFirstMatchingSubstring(word) {
   return word;
 }
 
+// http://stackoverflow.com/questions/12048621/get-all-combinations-for-a-string
+// Using combinations (don't want permutations, must maintain order of letters)
+// Note: this algorithm may not be perfect, but it does the trick for now
+function getFirstMatchingCombination(word) {
+
+  // Return null if no combination is a word, else return that word
+  function loop(start, depth, prefix) {
+    var next;
+    for (var i = start; i < word.length; i++) {
+      next = prefix + word[i];
+      // Don't go too deep because of performance issues
+      if (depth > 0 && depth < 8) {
+        return loop(i + 1, depth - 1, next);
+      } 
+      if(next.length > 2 && wordDictionaryArray.includes(next)) {
+        return next;
+      }
+    }
+    // no good candidate word was found
+    return null;
+  }
+
+  for (var i = 0; i < word.length; i++) {
+    var subword = loop(0, i, '');
+    if (subword) {
+      return subword;
+    }
+  }
+
+  // No suitable subword was found so return the original word
+  return word;
+}
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
 function getRandomInt(min, max) {
@@ -65,7 +97,7 @@ function getRandomInt(min, max) {
 }
 
 function createBlackoutWord(word) {
-  var subword = getFirstMatchingSubstring(word);
+  var subword = getFirstMatchingCombination(word);
   var resWordArray = [];
   if (word !== subword) {
     var subwordIdx = 0;
@@ -89,7 +121,6 @@ function createBlackoutWord(word) {
 function getWordIndices(numWords, totalWords) {
   // Indicies will be modified
   var indices = Array.from(Array(totalWords).keys());
-  console.log(indices)
   var resultIndices = []
   for (var i = 0; i < numWords; i++) {
     // Get a random index from the remaining indicies
@@ -97,7 +128,6 @@ function getWordIndices(numWords, totalWords) {
     resultIndices.push(indices.splice(randInt, 1)[0]);
   }
   // Unsorted array of indices
-  console.log(resultIndices)
   return resultIndices;
 }
 
@@ -158,8 +188,8 @@ function replaceText(element) {
         }
       } else {
         // var textNode = node.childNodes[0];
-        // node.replaceChild(document.createTextNode('fucking links', textNode));
-        console.log('logging problematic node', node)
+        // node.replaceChild(document.createTextNode('ugh links', textNode));
+        // console.log('logging problematic node', node)
       }
     }
   }
@@ -175,8 +205,8 @@ function replaceText(element) {
 //       // Sanity check for text type child node. It should be a text node.
 //       if (node.nodeType === 3) {
 //         var text = node.nodeValue;
-//         // var replacedText = text.replace(/handled/gi, 'FUCK YEEAAAH');
-//         tweet.replaceChild(document.createTextNode('hell yes'), node);
+//         // var replacedText = text.replace(/handled/gi, 'yay YEEAAAH');
+//         tweet.replaceChild(document.createTextNode('yes yes'), node);
 //       }
 //     }
 //   }
