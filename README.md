@@ -13,6 +13,17 @@ CHAOS REIGNS
 - Open `chrome://extensions/`
 - Enable "Developer mode" (in the top right)
 - Click "Load unpacked extension..."
+- Load in the src folder
+
+# Limitations
+
+- Doesn't handle punctuation
+- Doesn't handle capital letters
+- The list of words is lackluster
+- Isn't smart about the grammar (randomly chooses and replaces words)
+- Word selection is greedy
+- Doesn't handle hashtags, mentions, nor text in between hashtags and/or mentions
+- Tons more
 
 # Resources
 
@@ -22,6 +33,7 @@ stackoverflow
 
 - [chrome extension manifest 'matchs'](http://stackoverflow.com/questions/2769525/chrome-extension-manifest-matches)
 - [Javascript check my word is valid or not](http://stackoverflow.com/questions/28576253/jquery-javascript-check-my-word-is-valid-or-not)
+- A few other links are in the code
 
 words
 
